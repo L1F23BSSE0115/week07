@@ -1,0 +1,10 @@
+FROM node:alpine AS mybuildmachine
+WORKDIR /seg3-app
+COPY . .
+RUN npm install parcel
+RUN npx parcel build "source/index.html" --dist-dir "dist" --public-url "/"
+COPY dist/
+
+
+FROM nginx:alpine 
+COPY --from=mybuildmachine /seg3-app/dist/ /usr/share/nginx/html
